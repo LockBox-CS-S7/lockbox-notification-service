@@ -1,9 +1,9 @@
 import express from 'express';
 import { initializeRabbitMQ, getChannel, QUEUE_NAME } from './amqp_conn_management.ts';
+import { handleIncomingMessage, getReceivedMessages } from "./message_handling.ts";
 
 const app = express();
 const port = 4040;
-const receivedMessages: string[] = [];
 
 app.use(express.json());
 
@@ -17,8 +17,7 @@ try {
 const channel = getChannel();
 if (channel) {
     channel.consume(QUEUE_NAME, (msg) => {
-        console.log(' [x] Received message: ' + msg?.content.toString());
-        receivedMessages.push(msg!.content.toString());
+        handleIncomingMessage(msg);
     }, {
         noAck: true,
     });
@@ -32,7 +31,7 @@ app.get('/', (_req, res) => {
 });
 
 app.get('/messages', (_req, res) => {
-    res.json(receivedMessages);
+    res.json(getReceivedMessages());
 });
 
 app.listen(port, () => {
