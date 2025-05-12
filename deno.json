@@ -1,6 +1,7 @@
 {
   "tasks": {
-    "dev": "deno run --watch -A --env-file src/main.ts"
+    "dev": "deno run --watch -A --env-file src/main.ts",
+    "db:push": "deno --env -A --node-modules-dir npm:drizzle-kit push"
   },
   "imports": {
     "@std/assert": "jsr:@std/assert@1",
