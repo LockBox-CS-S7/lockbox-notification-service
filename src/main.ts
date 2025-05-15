@@ -17,7 +17,7 @@ try {
 const channel = getChannel();
 if (channel) {
     channel.consume(QUEUE_NAME, (msg) => {
-        handleIncomingMessage(msg);
+        await handleIncomingMessage(msg);
     }, {
         noAck: true,
     });

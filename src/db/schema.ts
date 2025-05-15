@@ -4,5 +4,5 @@ export const notificationTable = table('notification_table', {
     id: int().primaryKey().autoincrement(),
     title: varchar({ length: 255 }).notNull(),
     description: varchar({ length: 255 }),
-    userId: int('user_id').notNull(),
+    userId: varchar('user_id', { length: 255 }).notNull(),
 });
