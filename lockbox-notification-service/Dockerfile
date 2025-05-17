@@ -1,0 +1,23 @@
+﻿FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
+USER $APP_UID
+WORKDIR /app
+EXPOSE 8080
+EXPOSE 8081
+
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src
+COPY ["lockbox-notification-service/lockbox-notification-service.csproj", "lockbox-notification-service/"]
+RUN dotnet restore "lockbox-notification-service/lockbox-notification-service.csproj"
+COPY . .
+WORKDIR "/src/lockbox-notification-service"
+RUN dotnet build "./lockbox-notification-service.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "./lockbox-notification-service.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "lockbox-notification-service.dll"]
