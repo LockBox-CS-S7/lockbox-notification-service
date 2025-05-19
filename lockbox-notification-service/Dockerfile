@@ -7,8 +7,8 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["lockbox-notification-service/lockbox-notification-service.csproj", "lockbox-notification-service/"]
-RUN dotnet restore "lockbox-notification-service/lockbox-notification-service.csproj"
+COPY [".", "lockbox-notification-service/"]
+RUN dotnet restore "./lockbox-notification-service/lockbox-notification-service.csproj"
 COPY . .
 WORKDIR "/src/lockbox-notification-service"
 RUN dotnet build "./lockbox-notification-service.csproj" -c $BUILD_CONFIGURATION -o /app/build
