@@ -38,6 +38,13 @@ public class NotificationController : ControllerBase
         _logger = logger;
     }
 
+    [HttpGet("/")]
+    public ActionResult<List<NotificationModel>> GetAllNotifications()
+    {
+        _logger.LogInformation("Someone requested all notifications.");
+        return Ok(_mockModels);
+    }
+
     [HttpGet("user-notifications/{userId}")]
     public ActionResult<NotificationModel> GetNotificationsByUserId(string userId)
     {

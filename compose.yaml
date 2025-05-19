@@ -1,0 +1,7 @@
+﻿services:
+  lockbox-notification-service:
+    image: lockbox-notification-service
+    build:
+      context: .
+      dockerfile: lockbox-notification-service/Dockerfile
+

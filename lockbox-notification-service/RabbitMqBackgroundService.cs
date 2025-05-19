@@ -51,7 +51,7 @@ namespace lockbox_notification_service
                 // TODO: Do something with the message here...
             };
             
-            await _channel.BasicConsumeAsync(_queueName, autoAck: true, consumer: consumer);
+            await _channel.BasicConsumeAsync(_queueName, autoAck: true, consumer: consumer, cancellationToken: stoppingToken);
             _logger.LogInformation("Started consuming queue {Queue}", _queueName);
 
             try
