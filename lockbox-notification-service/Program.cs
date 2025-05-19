@@ -10,7 +10,7 @@ public class Program
         builder.Services.AddOpenApi();
         
         // Add the RabbitMQ background service
-        builder.Services.AddSingleton<RabbitMqBackgroundService>(sp =>
+        builder.Services.AddHostedService<RabbitMqBackgroundService>(sp => 
             new RabbitMqBackgroundService(
                 queueName: "file-queue",
                 logger: sp.GetRequiredService<ILogger<RabbitMqBackgroundService>>()

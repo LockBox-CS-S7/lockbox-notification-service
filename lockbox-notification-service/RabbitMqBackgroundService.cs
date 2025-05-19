@@ -19,7 +19,7 @@ namespace lockbox_notification_service
             _factory = new ConnectionFactory { HostName = "localhost" }; 
         }
 
-        public override async Task<Task> StartAsync(CancellationToken cancellationToken)
+        public override async Task StartAsync(CancellationToken cancellationToken)
         {
             _connection = await _factory.CreateConnectionAsync(cancellationToken);
             _channel = await _connection.CreateChannelAsync(cancellationToken: cancellationToken);
@@ -34,7 +34,7 @@ namespace lockbox_notification_service
             
             _logger.LogInformation("RabbitMQ connection/channel established and queue declared: {Queue}", _queueName);
             
-            return base.StartAsync(cancellationToken);
+            await base.StartAsync(cancellationToken);
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
