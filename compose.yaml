@@ -4,4 +4,22 @@
     build:
       context: .
       dockerfile: lockbox-notification-service/Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      rabbitmq-broker:
+        condition: service_healthy
 
+  rabbitmq-broker:
+    image: rabbitmq:4-management
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    

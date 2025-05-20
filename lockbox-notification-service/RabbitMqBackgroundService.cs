@@ -16,7 +16,14 @@ namespace lockbox_notification_service
         {
             _queueName = queueName;
             _logger = logger;
-            _factory = new ConnectionFactory { HostName = "localhost" }; 
+            // TODO: The RabbitMQ connection details should come from env vars.
+            _factory = new ConnectionFactory
+            {
+                HostName = "rabbitmq-broker",
+                Port = 5672,
+                UserName = "guest",
+                Password = "guest",
+            }; 
         }
 
         public override async Task StartAsync(CancellationToken cancellationToken)
