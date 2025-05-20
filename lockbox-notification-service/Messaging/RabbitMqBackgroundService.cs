@@ -2,7 +2,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
 
-namespace lockbox_notification_service
+namespace lockbox_notification_service.Messaging
 {
     public class RabbitMqBackgroundService : BackgroundService
     {
