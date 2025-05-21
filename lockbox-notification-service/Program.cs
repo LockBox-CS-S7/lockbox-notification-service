@@ -1,3 +1,5 @@
+using lockbox_notification_service.Messaging;
+
 namespace lockbox_notification_service;
 
 public class Program
