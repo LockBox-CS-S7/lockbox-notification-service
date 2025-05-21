@@ -11,6 +11,7 @@ namespace lockbox_notification_service.Messaging
         private IConnection? _connection;
         private IChannel? _channel;
         private readonly ConnectionFactory _factory;
+        private readonly IMessageHandler _messageHandler;
 
         public RabbitMqBackgroundService(string queueName, ILogger<RabbitMqBackgroundService> logger)
         {
@@ -19,11 +20,13 @@ namespace lockbox_notification_service.Messaging
             // TODO: The RabbitMQ connection details should come from env vars.
             _factory = new ConnectionFactory
             {
-                HostName = "rabbitmq-broker",
+                HostName = "localhost",
                 Port = 5672,
                 UserName = "guest",
                 Password = "guest",
-            }; 
+            };
+            
+            _messageHandler = new RabbitmqMessageHandler();
         }
 
         public override async Task StartAsync(CancellationToken cancellationToken)
@@ -55,7 +58,7 @@ namespace lockbox_notification_service.Messaging
                 var message = Encoding.UTF8.GetString(body);
                 _logger.LogInformation("Received message: {message}", message);
                 
-                // TODO: Do something with the message here...
+                _messageHandler.HandleMessage(message);
             };
             
             await _channel.BasicConsumeAsync(_queueName, autoAck: true, consumer: consumer, cancellationToken: stoppingToken);
@@ -68,7 +71,7 @@ namespace lockbox_notification_service.Messaging
             catch (TaskCanceledException)
             {
                 // This runs when the cancellation token tells to stop the process.
-                _logger.LogError("Caught a \"TaskCanceledException\"");
+                _logger.LogError("The RabbitMqBackgroundService caught a \"TaskCanceledException\"");
             }
         }
 
