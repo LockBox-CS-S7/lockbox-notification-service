@@ -1,11 +1,12 @@
-using System.Data;
-using Dapper;
-using Microsoft.Data.SqlClient;
+using MongoDB.Driver;
+using MongoDB.Bson;
 using Newtonsoft.Json;
 using lockbox_notification_service.Models;
 
+
 namespace lockbox_notification_service.Messaging;
 
+// TODO: Make this use MongoDB instead, makes more sense and adds a cloud service
 public class RabbitmqMessageHandler : IMessageHandler
 {
     private const string ConnectionString = "Server=127.0.0.1:3306;Database=notification-db;Uid=root;Pwd=password;\n";
@@ -22,15 +23,22 @@ public class RabbitmqMessageHandler : IMessageHandler
 
             var notification = FileMessageToNotification(msgModel);
 
-            using IDbConnection db = new SqlConnection(ConnectionString);
-            db.Open();
-            var rowsAffected = db.Execute(
-                @"INSERT INTO Notifications (Title, Description, UserId) VALUES (@Title, @Description, @UserId)",
-                notification);
-
-            if (rowsAffected <= 0)
+            try
             {
-                throw new Exception("Failed to insert the notification into the database.");
+                var mongoConnString = Environment.GetEnvironmentVariable("MONGO_DB_CONN_STRING");
+                var settings = MongoClientSettings.FromConnectionString(mongoConnString);
+                settings.ServerApi = new ServerApi(ServerApiVersion.V1);
+
+                var client = new MongoClient(settings);
+                var database = client.GetDatabase("Development");
+                var notificationCollection = database.GetCollection<BsonDocument>("notifications");
+                
+                var notificationBson = notification.AsBsonDocument();
+                // TODO: Create the notification in the collection
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to store the notification to MongoDB Atlas: {ex.Message}");
             }
         }
         catch (JsonSerializationException ex)

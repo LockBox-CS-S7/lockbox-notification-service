@@ -1,3 +1,5 @@
+using MongoDB.Bson;
+
 namespace lockbox_notification_service.Models;
 
 public class NotificationModel
@@ -13,5 +15,16 @@ public class NotificationModel
         Title = title;
         Description = description;
         UserId = userId;
+    }
+
+    public BsonDocument AsBsonDocument()
+    {
+        return new BsonDocument
+        {
+            { "id", Id },
+            { "title", Title},
+            { "description", Description},
+            { "user_id", UserId }
+        };
     }
 }

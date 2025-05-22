@@ -1,3 +1,4 @@
+using DotNetEnv;
 using lockbox_notification_service.Messaging;
 
 namespace lockbox_notification_service;
@@ -6,6 +7,8 @@ public class Program
 {
     public static void Main(string[] args)
     {
+        Env.Load();
+        
         var builder = WebApplication.CreateBuilder(args);
         
         builder.Services.AddControllers();
