@@ -20,11 +20,8 @@ public class RabbitmqMessageHandler : IMessageHandler
     {
         try
         {
-            var msgModel = JsonConvert.DeserializeObject<FileServiceMsgModel>(message);
-            if (msgModel == null)
-            {
-                throw new Exception("The deserialized message is null.");
-            }
+            var msgModel = JsonConvert.DeserializeObject<FileServiceMsgModel>(message) ??
+                           throw new Exception("The deserialized message is null.");
 
             var notification = FileMessageToNotification(msgModel);
 
