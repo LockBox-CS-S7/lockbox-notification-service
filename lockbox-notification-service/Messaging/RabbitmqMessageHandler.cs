@@ -34,7 +34,7 @@ public class RabbitmqMessageHandler : IMessageHandler
                 var notificationCollection = database.GetCollection<BsonDocument>("notifications");
                 
                 var notificationBson = notification.AsBsonDocument();
-                // TODO: Create the notification in the collection
+                notificationCollection.InsertOne(notificationBson);
             }
             catch (Exception ex)
             {
