@@ -6,10 +6,15 @@ using lockbox_notification_service.Models;
 
 namespace lockbox_notification_service.Messaging;
 
-// TODO: Make this use MongoDB instead, makes more sense and adds a cloud service
 public class RabbitmqMessageHandler : IMessageHandler
 {
-    private const string ConnectionString = "Server=127.0.0.1:3306;Database=notification-db;Uid=root;Pwd=password;\n";
+    private string _mongoConnString;
+
+    public RabbitmqMessageHandler()
+    {
+        _mongoConnString = Environment.GetEnvironmentVariable("MONGO_DB_CONN_STRING") ??
+                           throw new Exception("Failed to get the MongoDB connection string from environment.");
+    }
     
     public void HandleMessage(string message)
     {

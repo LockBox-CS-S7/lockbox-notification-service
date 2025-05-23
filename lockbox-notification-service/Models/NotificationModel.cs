@@ -21,7 +21,7 @@ public class NotificationModel
     {
         return new BsonDocument
         {
-            { "id", Id },
+            { "id", Id ?? "" },
             { "title", Title},
             { "description", Description},
             { "user_id", UserId }
