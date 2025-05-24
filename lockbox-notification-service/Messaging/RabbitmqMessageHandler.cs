@@ -33,10 +33,9 @@ public class RabbitmqMessageHandler : IMessageHandler
 
                 var client = new MongoClient(settings);
                 var database = client.GetDatabase("Development");
-                var notificationCollection = database.GetCollection<BsonDocument>("notifications");
+                var notificationCollection = database.GetCollection<NotificationModel>("notifications");
                 
-                var notificationBson = notification.AsBsonDocument();
-                notificationCollection.InsertOne(notificationBson);
+                notificationCollection.InsertOne(notification);
             }
             catch (Exception ex)
             {

@@ -16,15 +16,4 @@ public class NotificationModel
         Description = description;
         UserId = userId;
     }
-
-    public BsonDocument AsBsonDocument()
-    {
-        return new BsonDocument
-        {
-            { "id", Id ?? "" },
-            { "title", Title},
-            { "description", Description},
-            { "user_id", UserId }
-        };
-    }
 }

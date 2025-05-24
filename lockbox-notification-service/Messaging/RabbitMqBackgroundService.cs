@@ -20,7 +20,7 @@ namespace lockbox_notification_service.Messaging
             // TODO: The RabbitMQ connection details should come from env vars.
             _factory = new ConnectionFactory
             {
-                HostName = "rabbitmq-broker",
+                HostName = "localhost",
                 Port = 5672,
                 UserName = "guest",
                 Password = "guest",

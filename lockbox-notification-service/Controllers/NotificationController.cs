@@ -1,5 +1,7 @@
 using lockbox_notification_service.Models;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace lockbox_notification_service.Controllers;
 
@@ -8,56 +10,50 @@ namespace lockbox_notification_service.Controllers;
 public class NotificationController : ControllerBase
 {
     private readonly ILogger<NotificationController> _logger;
+    private readonly MongoClient _mongoClient;
     
-    private readonly List<NotificationModel> _mockModels =
-    [
-        new NotificationModel(
-            "yn9w3myt9cw3y",
-            "test notification",
-            "This is a test notification",
-            "926yn983y93yt9"
-        ),
-
-        new NotificationModel(
-            "hosmohjh",
-            "wow",
-            "ow wow",
-            "noob"
-        ),
-
-        new NotificationModel(
-            "mwmy9hc_hw9h",
-            "file uploaded",
-            "Successfully uploaded a file!",
-            "noob"
-        )
-    ];
 
     public NotificationController(ILogger<NotificationController> logger)
     {
         _logger = logger;
+        
+        var mongoConnString = Environment.GetEnvironmentVariable("MONGO_DB_CONN_STRING") ?? 
+                              throw new Exception("Failed to get the MongoDB connection string from environment.");
+        var settings = MongoClientSettings.FromConnectionString(mongoConnString);
+        settings.ServerApi = new ServerApi(ServerApiVersion.V1);
+        
+        _mongoClient = new MongoClient(settings);
     }
 
     [HttpGet("/")]
-    public ActionResult<List<NotificationModel>> GetAllNotifications()
+    public async Task<ActionResult<List<NotificationModel>>> GetAllNotifications()
     {
         _logger.LogInformation("Someone requested all notifications.");
-        return Ok(_mockModels);
+        
+        var database = _mongoClient.GetDatabase("Development");
+        var notificationCollection = database.GetCollection<NotificationModel>("notifications");
+
+        var notifications = await notificationCollection.Find(new BsonDocument()).ToListAsync();
+        
+        return Ok(notifications);
     }
 
     [HttpGet("user-notifications/{userId}")]
-    public ActionResult<NotificationModel> GetNotificationsByUserId(string userId)
+    public async Task<ActionResult<List<NotificationModel>>>  GetNotificationsByUserId(string userId)
     {
         _logger.LogInformation("Someone requested all notifications from the user with id: {userId}", userId);
 
-        foreach (var notification in _mockModels)
+        var database = _mongoClient.GetDatabase("Development");
+        var notificationCollection = database.GetCollection<NotificationModel>("notifications");
+
+        var filter = Builders<NotificationModel>.Filter.Eq(doc => doc.UserId, userId);
+        var foundNotifications = await notificationCollection.Find(filter).ToListAsync();
+
+        if (foundNotifications == null || foundNotifications.Count == 0)
         {
-            if (notification.UserId == userId)
-            {
-                return Ok(notification);
-            }
+            return NotFound("No notification with the given id was found");
         }
 
-        return NotFound("No notification with the given id was found");
+        return Ok(foundNotifications);
     }
 }
