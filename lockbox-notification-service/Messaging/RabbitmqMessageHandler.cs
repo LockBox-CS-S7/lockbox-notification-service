@@ -8,7 +8,7 @@ namespace lockbox_notification_service.Messaging;
 
 public class RabbitmqMessageHandler : IMessageHandler
 {
-    private string _mongoConnString;
+    private readonly string _mongoConnString;
 
     public RabbitmqMessageHandler()
     {
@@ -27,8 +27,7 @@ public class RabbitmqMessageHandler : IMessageHandler
 
             try
             {
-                var mongoConnString = Environment.GetEnvironmentVariable("MONGO_DB_CONN_STRING");
-                var settings = MongoClientSettings.FromConnectionString(mongoConnString);
+                var settings = MongoClientSettings.FromConnectionString(_mongoConnString);
                 settings.ServerApi = new ServerApi(ServerApiVersion.V1);
 
                 var client = new MongoClient(settings);
