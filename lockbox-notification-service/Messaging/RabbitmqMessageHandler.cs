@@ -1,5 +1,4 @@
 using MongoDB.Driver;
-using MongoDB.Bson;
 using Newtonsoft.Json;
 using lockbox_notification_service.Models;
 
@@ -16,7 +15,7 @@ public class RabbitmqMessageHandler : IMessageHandler
                            throw new Exception("Failed to get the MongoDB connection string from environment.");
     }
     
-    public void HandleMessage(string message)
+    public async Task HandleMessage(string message)
     {
         try
         {
@@ -34,7 +33,7 @@ public class RabbitmqMessageHandler : IMessageHandler
                 var database = client.GetDatabase("Development");
                 var notificationCollection = database.GetCollection<NotificationModel>("notifications");
                 
-                notificationCollection.InsertOne(notification);
+                await notificationCollection.InsertOneAsync(notification);
             }
             catch (Exception ex)
             {
@@ -66,7 +65,7 @@ public class RabbitmqMessageHandler : IMessageHandler
         // The model.EventType should be checked for this.
         return new NotificationModel(
             null,
-            "File upload successfull",
+            "File upload successful",
             $"You successfully uploaded a file: {model.File}",
             model.UserId
         );

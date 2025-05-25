@@ -1,5 +1,3 @@
-using MongoDB.Bson;
-
 namespace lockbox_notification_service.Models;
 
 public class NotificationModel

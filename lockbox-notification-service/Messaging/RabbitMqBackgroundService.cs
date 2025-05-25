@@ -61,13 +61,13 @@ namespace lockbox_notification_service.Messaging
             if (_channel == null) throw new InvalidOperationException("Channel has not been initialized.");
 
             var consumer = new AsyncEventingBasicConsumer(_channel);
-            consumer.ReceivedAsync += async (Models, ea) =>
+            consumer.ReceivedAsync += async (models, ea) =>
             {
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
                 _logger.LogInformation("Received message: {message}", message);
                 
-                _messageHandler.HandleMessage(message);
+                await _messageHandler.HandleMessage(message);
             };
             
             await _channel.BasicConsumeAsync(_queueName, autoAck: true, consumer: consumer, cancellationToken: stoppingToken);

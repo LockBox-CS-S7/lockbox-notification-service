@@ -18,4 +18,13 @@ public class FileServiceMsgModel
     
     [JsonProperty("file")]
     public string? File { get; set; }
+
+    public FileServiceMsgModel(string eventType, string timeStamp, string source, string userId, string? file)
+    {
+        EventType = eventType;
+        TimeStamp = timeStamp;
+        Source = source;
+        UserId = userId;
+        File = file;
+    }
 }
