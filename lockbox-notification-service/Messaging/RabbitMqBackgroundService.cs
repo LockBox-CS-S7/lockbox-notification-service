@@ -12,18 +12,27 @@ namespace lockbox_notification_service.Messaging
         private IChannel? _channel;
         private readonly ConnectionFactory _factory;
         private readonly IMessageHandler _messageHandler;
-
+        
         public RabbitMqBackgroundService(string queueName, ILogger<RabbitMqBackgroundService> logger)
         {
             _queueName = queueName;
             _logger = logger;
-            // TODO: The RabbitMQ connection details should come from env vars.
+
+            string rabbitHost = Environment.GetEnvironmentVariable("RABBITMQ_HOST") ??
+                                throw new Exception("RABBITMQ_HOST environment variable was null");
+            string rabbitPort = Environment.GetEnvironmentVariable("RABBITMQ_PORT") ??
+                                throw new Exception("RABBITMQ_PORT environment variable was null");
+            string rabbitUserName = Environment.GetEnvironmentVariable("RABBITMQ_USERNAME") ?? 
+                                throw new Exception("RABBITMQ_USERNAME environment variable was null");
+            string rabbitPassword = Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD") ??
+                                throw new Exception("RABBITMQ_PASSWORD environment variable was null");
+            
             _factory = new ConnectionFactory
             {
-                HostName = "localhost",
-                Port = 5672,
-                UserName = "guest",
-                Password = "guest",
+                HostName = rabbitHost,
+                Port = int.Parse(rabbitPort),
+                UserName = rabbitUserName,
+                Password = rabbitPassword,
             };
             
             _messageHandler = new RabbitmqMessageHandler();

@@ -8,6 +8,10 @@
       - "8080:8080"
     environment:
       - MONGO_DB_CONN_STRING=${MONGO_DB_CONN_STRING}
+      - RABBITMQ_HOST=rabbitmq-broker
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USERNAME=guest
+      - RABBITMQ_PASSWORD=guest
     depends_on:
       rabbitmq-broker:
         condition: service_healthy
