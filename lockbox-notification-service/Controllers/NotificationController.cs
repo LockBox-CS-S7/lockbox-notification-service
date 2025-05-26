@@ -17,7 +17,7 @@ public class NotificationController : ControllerBase
     {
         _logger = logger;
         
-        var mongoConnString = Environment.GetEnvironmentVariable("MONGO_DB_CONN_STRING") ?? 
+        var mongoConnString = Environment.GetEnvironmentVariable("MONGODB_CONN_STRING") ?? 
                               throw new Exception("Failed to get the MongoDB connection string from environment.");
         var settings = MongoClientSettings.FromConnectionString(mongoConnString);
         settings.ServerApi = new ServerApi(ServerApiVersion.V1);

@@ -11,7 +11,7 @@ public class RabbitmqMessageHandler : IMessageHandler
 
     public RabbitmqMessageHandler()
     {
-        _mongoConnString = Environment.GetEnvironmentVariable("MONGO_DB_CONN_STRING") ??
+        _mongoConnString = Environment.GetEnvironmentVariable("MONGODB_CONN_STRING") ??
                            throw new Exception("Failed to get the MongoDB connection string from environment.");
     }
     

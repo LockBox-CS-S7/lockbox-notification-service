@@ -18,7 +18,7 @@ namespace lockbox_notification_service.Messaging
             _queueName = queueName;
             _logger = logger;
 
-            string rabbitUri = Environment.GetEnvironmentVariable("RABBITMQ_URI") ??
+            string rabbitUri = Environment.GetEnvironmentVariable("RABBITMQ_CONN_STRING") ??
                                throw new Exception("Could not get the RabbitMQ broker uri from environment.");
             
             _factory = new ConnectionFactory
