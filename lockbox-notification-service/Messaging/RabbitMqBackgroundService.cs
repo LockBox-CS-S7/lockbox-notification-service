@@ -18,21 +18,12 @@ namespace lockbox_notification_service.Messaging
             _queueName = queueName;
             _logger = logger;
 
-            string rabbitHost = Environment.GetEnvironmentVariable("RABBITMQ_HOST") ??
-                                throw new Exception("RABBITMQ_HOST environment variable was null");
-            string rabbitPort = Environment.GetEnvironmentVariable("RABBITMQ_PORT") ??
-                                throw new Exception("RABBITMQ_PORT environment variable was null");
-            string rabbitUserName = Environment.GetEnvironmentVariable("RABBITMQ_USERNAME") ?? 
-                                throw new Exception("RABBITMQ_USERNAME environment variable was null");
-            string rabbitPassword = Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD") ??
-                                throw new Exception("RABBITMQ_PASSWORD environment variable was null");
+            string rabbitUri = Environment.GetEnvironmentVariable("RABBITMQ_URI") ??
+                               throw new Exception("Could not get the RabbitMQ broker uri from environment.");
             
             _factory = new ConnectionFactory
             {
-                HostName = rabbitHost,
-                Port = int.Parse(rabbitPort),
-                UserName = rabbitUserName,
-                Password = rabbitPassword,
+                Uri = new Uri(rabbitUri)
             };
             
             _messageHandler = new RabbitmqMessageHandler();

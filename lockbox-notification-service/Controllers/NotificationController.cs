@@ -12,7 +12,7 @@ public class NotificationController : ControllerBase
     private readonly ILogger<NotificationController> _logger;
     private readonly MongoClient _mongoClient;
     
-
+    
     public NotificationController(ILogger<NotificationController> logger)
     {
         _logger = logger;
@@ -24,7 +24,8 @@ public class NotificationController : ControllerBase
         
         _mongoClient = new MongoClient(settings);
     }
-
+    
+    
     [HttpGet("/")]
     public async Task<ActionResult<List<NotificationModel>>> GetAllNotifications()
     {
@@ -37,7 +38,8 @@ public class NotificationController : ControllerBase
         
         return Ok(notifications);
     }
-
+    
+    
     [HttpGet("user-notifications/{userId}")]
     public async Task<ActionResult<List<NotificationModel>>>  GetNotificationsByUserId(string userId)
     {
