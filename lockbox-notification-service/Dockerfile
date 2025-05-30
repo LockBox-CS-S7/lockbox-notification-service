@@ -9,7 +9,6 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY . .
 RUN dotnet restore "./lockbox-notification-service.csproj"
-COPY . .
 RUN dotnet build "./lockbox-notification-service.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
