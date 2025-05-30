@@ -8,9 +8,8 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY . .
-RUN dotnet restore "./lockbox-notification-service/lockbox-notification-service.csproj"
+RUN dotnet restore "./lockbox-notification-service.csproj"
 COPY . .
-WORKDIR "/src/lockbox-notification-service"
 RUN dotnet build "./lockbox-notification-service.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
