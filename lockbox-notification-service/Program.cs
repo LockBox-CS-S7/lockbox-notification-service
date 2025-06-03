@@ -32,6 +32,10 @@ public class Program
         app.UseAuthorization();
         app.MapControllers();
         
+        // Start collecting metrics for Prometheus
+        using var server = new Prometheus.MetricServer(port: 1234);
+        server.Start();
+        
         app.Run();
     }
 }
