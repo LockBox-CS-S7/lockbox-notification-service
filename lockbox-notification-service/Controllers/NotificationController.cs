@@ -26,7 +26,7 @@ public class NotificationController : ControllerBase
     }
     
     
-    [HttpGet("/")]
+    [HttpGet]
     public async Task<ActionResult<List<NotificationModel>>> GetAllNotifications()
     {
         _logger.LogInformation("Someone requested all notifications.");
