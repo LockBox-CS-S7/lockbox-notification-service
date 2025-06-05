@@ -21,11 +21,16 @@ public class TestingController : ControllerBase
         return Ok("Successfully reached the testing API!");
     }
 
-    [HttpGet("simulate-load")]
-    public ActionResult SimulateLoad()
+    [HttpGet("simulate-load/{limit}")]
+    public ActionResult SimulateLoad(int limit)
     {
         _logger.LogInformation("Starting load simulation...");
-        CpuIntensiveTask.CalculatePrimes(1000000);
+        
+        Parallel.For(0, Environment.ProcessorCount, i =>
+        {
+            CpuIntensiveTask.CalculatePrimes(limit);
+        });
+        
         return Ok("Load simulation complete!");
     }
 }
@@ -64,14 +69,5 @@ internal static class CpuIntensiveTask
 
         sw.Stop();
         Console.WriteLine($"Found {count} primes in {sw.ElapsedMilliseconds} ms.");
-    }
-
-    private static void TestMain(string[] args)
-    {
-        int limit = 1000000; // Adjust this limit to change the intensity of the computation
-        Parallel.For(0, Environment.ProcessorCount, i =>
-        {
-            CalculatePrimes(limit);
-        });
     }
 }
