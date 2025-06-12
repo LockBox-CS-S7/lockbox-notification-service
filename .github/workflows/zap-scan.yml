@@ -9,11 +9,6 @@ jobs:
   zap_scan:
     runs-on: ubuntu-latest
 
-    services:
-      zap:
-        image: owasp/zap2docker-stable
-        options: --network host
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -41,17 +36,10 @@ jobs:
             sleep 2
           done
 
-      - name: Run ZAP Baseline Scan
-        run: |
-          docker run --network host \
-            -v $(pwd):/zap/wrk/:rw \
-            owasp/zap2docker-stable zap-baseline.py \
-            -t http://localhost:5000 \
-            -r zap_report.html \
-            -n zap_policy.conf || true
-
-      - name: Upload ZAP Report
-        uses: actions/upload-artifact@v4
+      - name: ZAP API Scan
+        uses: zaproxy/action-api-scan@v0.9.0
         with:
-          name: zap-report
-          path: zap_report.html
+          token: ${{ secrets.GITHUB_TOKEN }}
+          format: openapi
+          target: 'http://localhost:5000'
+          cmd_options: '-a'
