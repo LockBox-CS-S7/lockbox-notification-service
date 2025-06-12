@@ -1,0 +1,57 @@
+name: ZAP Scan - .NET 9 API
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  zap_scan:
+    runs-on: ubuntu-latest
+
+    services:
+      zap:
+        image: owasp/zap2docker-stable
+        options: --network host
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 9 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'  # Use the latest 9.0 preview
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build .NET Web API
+        run: dotnet build --configuration Release
+
+      - name: Run API in background
+        run: |
+          dotnet run --no-build --urls=http://localhost:5000 &
+          echo "Waiting for API to be ready..."
+          for i in {1..30}; do
+            if curl -s http://localhost:5000/health > /dev/null; then
+              echo "API is ready!"
+              break
+            fi
+            sleep 2
+          done
+
+      - name: Run ZAP Baseline Scan
+        run: |
+          docker run --network host \
+            -v $(pwd):/zap/wrk/:rw \
+            owasp/zap2docker-stable zap-baseline.py \
+            -t http://localhost:5000 \
+            -r zap_report.html \
+            -n zap_policy.conf || true
+
+      - name: Upload ZAP Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap-report
+          path: zap_report.html
