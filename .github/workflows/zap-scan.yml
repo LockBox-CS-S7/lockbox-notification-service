@@ -21,12 +21,12 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
-      - name: Build .NET Web API
-        run: dotnet build --configuration Release
+#      - name: Build .NET Web API
+#        run: dotnet build --configuration Release
 
       - name: Run API in background
         run: |
-          dotnet run --no-build --urls=http://localhost:5000 &
+          dotnet run --urls=http://localhost:5000 &
           echo "Waiting for API to be ready..."
           for i in {1..30}; do
             if curl -s http://localhost:5000/health > /dev/null; then
